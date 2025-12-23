@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Health check route first
+// Health check route
 router.get('/health', (req, res) => {
   res.json({
     success: true,
@@ -10,7 +10,7 @@ router.get('/health', (req, res) => {
   });
 });
 
-// Import và test từng route một
+// Public routes
 try {
   const authRoutes = require('./auth.routes');
   router.use('/auth', authRoutes);
@@ -39,11 +39,34 @@ try {
   console.error('Error loading brand routes:', error.message);
 }
 
-// Protected routes - tạm thời comment để test
-// const authMiddleware = require('../middlewares/auth.middleware');
-// router.use('/users', authMiddleware, require('./user.routes'));
-// router.use('/cart', authMiddleware, require('./cart.routes'));
-// router.use('/orders', authMiddleware, require('./order.routes'));
+// Protected routes (authentication required - handled inside each route)
+try {
+  const userRoutes = require('./user.routes');
+  router.use('/users', userRoutes);
+} catch (error) {
+  console.error('Error loading user routes:', error.message);
+}
+
+try {
+  const cartRoutes = require('./cart.routes');
+  router.use('/cart', cartRoutes);
+} catch (error) {
+  console.error('Error loading cart routes:', error.message);
+}
+
+try {
+  const orderRoutes = require('./order.routes');
+  router.use('/orders', orderRoutes);
+} catch (error) {
+  console.error('Error loading order routes:', error.message);
+}
+
+try {
+  const reviewRoutes = require('./review.routes');
+  router.use('/reviews', reviewRoutes);
+} catch (error) {
+  console.error('Error loading review routes:', error.message);
+}
 
 // Admin routes
 try {
@@ -51,6 +74,14 @@ try {
   router.use('/admin', adminRoutes);
 } catch (error) {
   console.error('Error loading admin routes:', error.message);
+}
+
+// Staff routes
+try {
+  const staffRoutes = require('./staff');
+  router.use('/staff', staffRoutes);
+} catch (error) {
+  console.error('Error loading staff routes:', error.message);
 }
 
 module.exports = router;
